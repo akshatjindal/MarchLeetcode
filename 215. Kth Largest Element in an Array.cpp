@@ -5,17 +5,17 @@
 #include <stdio.h>
 #include <algorithm>
 #include <vector>
+#include <assert.h>
 using namespace std;
 
 class Solution {
 	
-	struct greater{
-		template<class T>
-		bool operator()(T const &a, T const &b) const {return a > b;}
-	};//theStruct
 public:
 	int findKthLargest(vector<int>& nums, int k) {
-		sort(nums.begin(), nums.end(), greater());
+        auto greater = [](int i, int j){
+            return i > j;
+            };
+		sort(nums.begin(), nums.end(), greater);
 		
 		int counter = 1;
 		auto iter = nums.begin();
@@ -35,8 +35,5 @@ int main(){
 	Solution x;
 	assert(x.findKthLargest(temp, 4) == 4);
 	assert(x.findKthLargest(tempTwo, 2) == 5);
-
 	
-	
-
 }
