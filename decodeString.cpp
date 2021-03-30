@@ -1,5 +1,5 @@
 //March 27 
-//https://leetcode.com/explore/interview/card/google/61/trees-and-graphs/3073/
+//https://leetcode.com/problems/decode-string/
 
 #include <string>
 #include <stack>
@@ -8,35 +8,52 @@ using namespace std;
 
 class Solution {
     int ptr = 0; 
+    int count = 0; 
     stack<int> nums; 
+    string decoded = ""; 
 public:
     string decodeString(string s) {
         string temp = ""; 
-        string decoded = "";
-        while(ptr < s.length()){
-            if(s[ptr] == ']'){
-                for(int i = 0; i < nums.top(); ++i){
-                    temp += temp; 
-                }
-                nums.pop(); 
-                ++ptr; 
-                return temp; 
-            }//base case
-
-            //todo: this should be while isdigit and the inside of the {} should chaange cuz 
-            //it could be upto 300 not only from 0-10. 
-            if(isdigit(s[ptr]) == true){
-                nums.push(s[ptr]); 
-                ptr += 2; //cuz the next digit will be a '['
-                temp.clear(); 
-                decoded = decoded + decodeString(s); //recursive call 
+        while(ptr <= s.length()-1){
+            if(s[ptr] == '['){
+                nums.push(count); 
+                count++; 
+                ptr++;
             }
+            //base case:
+            else if(s[ptr] == ']'){
+                nums.pop(); 
+                ptr++;
+                if(nums.empty() == true){
+                    return temp; 
+                }
+            }//if closing brack
+            else if(isdigit(s[ptr]) == true){
+
+                string tempIntString = ""; 
+                while(isdigit(s[ptr]) == true){
+                    tempIntString += s[ptr];
+                    ptr++; 
+                }//while isdigit, cuz the num can be 11 or 300 not only 0 - 9 (single digit)
+                int numIterations = stoi(tempIntString); 
+
+                temp += decodeString(s);
+                //now temp should contain the stuff from inside the [_]
+                
+                for(int i = 0; i < numIterations; ++i){
+                    temp += temp; 
+                }//loop
+                
+                decoded += temp; 
+                temp.clear(); 
+            }//if digit
             else{
-                temp += s[ptr]; 
-            }//else if its a character
-        
-    }//while
-    
-    return decoded; 
+                temp += s[ptr];
+                ptr++;  
+            }//else if its a charcater
+
+        }//while
+
+        return decoded; 
 }
 };
