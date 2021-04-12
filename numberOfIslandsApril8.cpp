@@ -8,35 +8,50 @@ using namespace std;
 
 class Solution{
     private: 
-    char current = '0'; 
     int islandCount = 0; 
-    stack<std::pair<int, int>> theStack;  
+    int numCols = 0; 
+    int numRows = 0; 
     public: 
 
-    void dfs(vector<vector<char>>& grid){
-        if(theStack.empty()){
+    void dfs(vector<vector<char>>& grid, int row, int col){
+        //base case
+        if(grid[row][col] == '0'){
             return; 
         }
-
-        auto x = theStack.top(); 
-        theStack.pop();
-        if(x.second + 1 < grid[0].size()){
-            theStack.push(std::make_pair(x.first, x.second+1)); 
-            dfs()
+        
+        if(col + 1 < numCols){
+            dfs(grid, row, col+1); 
         }
 
+        if(row + 1 < numRows){
+            dfs(grid, row+1, col); 
+        }
+
+        if(row + 1 < numRows && col - 1 >= 0){
+            dfs(grid, row+1, col-1); 
+        }
+
+        if(row + 1 < numRows && col + 1 < numCols){
+            dfs(grid, row+1, col+1); 
+        }
+
+
+        grid[row][col] = '0'; 
     }
     int numIslands(vector<vector<char>>& grid){
         int row = 0; 
         int col = 0; 
-        while(row++ < grid.size()){
-            while(col ++ < grid[0].size()){
-                if(current == '0' && grid[row][col] == '1'){
+        numCols = grid[0].size(); 
+        numRows = grid.size(); 
+        while(row++ < numRows){
+            while(col ++ < numCols){
+                if(grid[row][col] == '1'){
                     ++islandCount;
-                    theStack.push(std::make_pair(row,col));  
-                    dfs(grid); 
+                    dfs(grid, row, col); 
                 }
             }//inner
         }//outer
+
+    return islandCount; 
     }//func
 };
